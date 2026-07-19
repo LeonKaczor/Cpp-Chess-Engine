@@ -1,0 +1,15 @@
+# Executables (macOS/Linux)
+main
+chess
+bitboard
+move_generator
+
+# Debugging Symbols (macOS)
+*.dSYM/
+
+# Editor configuration files
+.vscode/
+
+# Compiled object files (if any)
+*.o
+*.out
