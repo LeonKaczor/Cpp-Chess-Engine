@@ -1,6 +1,6 @@
 # C++ Chess Engine
 
-A custom-built chess engine written from scratch in C++. This project served as a platform for exploring bit-array-based board representation, move generation, and basic chess AI algorithms—the Negamax algorithm. Additionally, the program includes a simple, interactive graphical interface built in SFML.
+A custom-built chess engine written from scratch in C++. This project served as a platform for exploring bit-array-based board representation, move generation, and basic chess AI algorithms: the Negamax algorithm. Additionally, the program includes a simple, interactive graphical interface built in SFML.
 
 
 <div align="center">
