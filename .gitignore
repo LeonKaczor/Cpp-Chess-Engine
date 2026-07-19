@@ -12,4 +12,4 @@ move_generator
 
 # Compiled object files (if any)
 *.o
-*.out
+*.out.DS_Store
