@@ -49,4 +49,4 @@ The application's starting point. It deales with the SFML window, renders the ch
 ## Dependencies
 
 *   A modern C++ Compiler.
-*   **SFML (Multimedia Library):  Required for rendering the graphics window and handling user input.
+*   SFML (Multimedia Library):  Required for rendering the graphics window and handling user input.
