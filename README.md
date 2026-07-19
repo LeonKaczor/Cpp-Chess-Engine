@@ -2,6 +2,10 @@
 
 A custom-built chess engine written from scratch in C++. This project served as a platform for exploring bit-array-based board representation, move generation, and basic chess AI algorithms—the Negamax algorithm. Additionally, the program includes a simple, interactive graphical interface built in SFML.
 
+
+![Gameplay Replay](game_replay.gif)
+
+
 ## Features
 
 * **Board Representation:** Uses 64-bit integers (bitboards) to speed up all operations.
