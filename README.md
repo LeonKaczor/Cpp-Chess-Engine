@@ -4,7 +4,7 @@ A custom-built chess engine written from scratch in C++. This project served as 
 
 
 <div align="center">
-  <img src="game_replay.gif" alt="Gameplay Replay" width="600"/>
+  <img src="game_replay_new.gif" alt="Gameplay Replay" width="600"/>
   <p><em>An example game between me and the engine. I play white and the engine plays black at a depth of 6. I think he played okay in the early and mid-game, but in the end the low depth didn't allow him to come up with a proper game plan (needs further refinement).</em></p>
 </div>
 
