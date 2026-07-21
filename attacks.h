@@ -19,3 +19,6 @@ extern U64 bishop_attacks[64];
 extern U64 king_attacks[64];
 extern U64 queen_attacks[64];
 extern U64 pawn_attacks[2][64];
+
+extern U64 passed_pawn_masks_white[64];
+extern U64 passed_pawn_masks_black[64];

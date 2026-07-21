@@ -4,6 +4,7 @@
 #include "attacks.h"
 #include "move_generator.h"
 #include "make_move.h"
+
 // function that flips bit number to the correspodning squere for white,
 // its used when calculating score for white pices
 
@@ -18,8 +19,8 @@ inline int flip(int squere)
 
 // tables with score constatns
 const int piece_values[12] = {
-    100, 500, 300, 300, 900, 20000,
-    100, 500, 300, 300, 900, 20000};
+    100, 500, 320, 330, 900, 20000,
+    100, 500, 320, 330, 900, 20000};
 
 const int knight_position_values[64] = {
     -50, -40, -30, -30, -30, -30, -40, -50,
@@ -79,7 +80,7 @@ const int king_midgame_position_values[64] = {
     -20, -30, -30, -40, -40, -30, -30, -20,
     -10, -20, -20, -20, -20, -20, -20, -10,
     20, 20, 0, 0, 0, 0, 20, 20,
-    20, 30, 10, 0, 0, 10, 35, 20 // on castling position we get a bonus
+    20, 30, 10, 0, 0, 10, 30, 20 // on castling position we get a bonus
 };
 
 // king whats to go to the center
@@ -116,6 +117,11 @@ const U64 file_masks[8] = {
     0x4040404040404040ULL, // G
     0x8080808080808080ULL  // H
 };
+
+// adding passed pawn bonus - endgame
+
+const int passed_pawn_bonus[8] = {0, 10, 30, 50, 75, 120, 150, 0};
+
 // penalty for doubled pawns
 const int doubled_pawn_penalty = 15;
 
@@ -175,6 +181,13 @@ int evaluate_postion(Position &pos)
         int squere = __builtin_ctzll(pawns_w);
         clear_bit(pawns_w, squere);
         score += pawn_position_values[flip(squere)];
+
+        // adding bonus for free pawn
+        if ((passed_pawn_masks_white[squere] & pos.bitboards[b_pawn]) == 0)
+        {
+            int rank = squere / 8;
+            score += passed_pawn_bonus[rank];
+        }
     }
 
     U64 pawns_b = pos.bitboards[b_pawn];
@@ -183,6 +196,13 @@ int evaluate_postion(Position &pos)
         int squere = __builtin_ctzll(pawns_b);
         clear_bit(pawns_b, squere);
         score -= pawn_position_values[(squere)];
+
+        // adding bonus for free pawn
+        if ((passed_pawn_masks_black[squere] & pos.bitboards[w_pawn]) == 0)
+        {
+            int rank = squere / 8;
+            score += passed_pawn_bonus[rank];
+        }
     }
 
     // bishops
@@ -297,7 +317,7 @@ int evaluate_postion(Position &pos)
     }
 
     // to promote developing pieces in the oppening
-    if (!is_endgame)
+    if (pos.fullmove_number < 5)
     {
 
         if (pos.bitboards[w_knight] & (1ULL << 1))
@@ -352,16 +372,20 @@ int evaluate_postion(Position &pos)
         }
     }
 
+    // pair of bishops is powerful
+    if (__builtin_popcountll(pos.bitboards[w_bishop]) >= 2)
+        score += 20;
+    if (__builtin_popcountll(pos.bitboards[b_bishop]) >= 2)
+        score -= 20;
+
     // for minmax convention + is winning - is loosing for both sides
     return (pos.side_to_move == white) ? score : -score;
     // condition ? if true : if black => get -- score + for black winning
 }
-// Funkcja pomocnicza: znajduje indeks pola (0-63), na którym stoi król danego koloru
 int get_king_square(Position &pos, int side)
 {
     int king_piece = (side == white) ? w_king : b_king;
 
-    // Szukamy króla na bitboardzie
     for (int sq = 0; sq < 64; sq++)
     {
         if (get_bit(pos.bitboards[king_piece], sq))
@@ -369,7 +393,7 @@ int get_king_square(Position &pos, int side)
             return sq;
         }
     }
-    return -1; // Fallback, nie powinno się nigdy zdarzyć w legalnej pozycji
+    return -1;
 }
 
 // 0 game is on 1 white win 2 black win 3 draw

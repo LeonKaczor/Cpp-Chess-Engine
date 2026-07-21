@@ -16,6 +16,10 @@ U64 queen_attacks[64];
 
 U64 pawn_attacks[2][64]; // [color][square] //done //attacks added
 
+// new tables for free pawns
+U64 passed_pawn_masks_white[64];
+U64 passed_pawn_masks_black[64];
+
 // this is used to prevent jumping over the boundries of the board
 // 0x => hexadecimal system XX => binary representation of 8 bits
 const U64 not_A_file = 0xFEFEFEFEFEFEFEFEULL;  // fe = 11111110
@@ -92,6 +96,45 @@ U64 generate_black_pawn_attacks(int square)
     return attacks_black;
 }
 
+U64 generate_passed_pawn_mask_white(int square)
+{
+    U64 mask = 0ULL;
+    int r = square / 8;
+    int f = square % 8;
+
+    for (int rank = r + 1; rank <= 7; rank++)
+    {
+        on_bit(mask, rank * 8 + f);
+
+        // check column to the left if pawn is not on file A
+        if (f > 0)
+            on_bit(mask, rank * 8 + (f - 1));
+        // check columnt to the right
+        if (f < 7)
+            on_bit(mask, rank * 8 + (f + 1));
+    }
+    return mask;
+}
+
+U64 generate_passed_pawn_mask_black(int square)
+{
+    U64 mask = 0ULL;
+    int r = square / 8;
+    int f = square % 8;
+    for (int rank = r - 1; rank >= 0; rank--)
+    {
+
+        on_bit(mask, rank * 8 + f);
+        // left
+        if (f > 0)
+            on_bit(mask, rank * 8 + (f - 1));
+        // right
+        if (f < 7)
+            on_bit(mask, rank * 8 + (f + 1));
+    }
+    return mask;
+}
+
 void init_leaper_attacks()
 {
     for (int square = 0; square < 64; square++)
@@ -101,6 +144,9 @@ void init_leaper_attacks()
 
         pawn_attacks[0][square] = generate_white_pawn_attacks(square);
         pawn_attacks[1][square] = generate_black_pawn_attacks(square);
+
+        passed_pawn_masks_white[square] = generate_passed_pawn_mask_white(square);
+        passed_pawn_masks_black[square] = generate_passed_pawn_mask_black(square);
     }
 }
 
